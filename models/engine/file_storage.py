@@ -70,12 +70,9 @@ class FileStorage:
         self.reload()
 
     def get(self, cls, id):
+        """Retrieves one object from filestorage database"""
         for key, value in self.__objects.items():
             if cls == value.__class__ or cls == value.__class__.__name__:
-                # print(f'key: {key}')
-                # print(f'value: {value}')
-                # print(f'value.keys: {value.__dict__}')
-                # print(f'value.id: {value.id}')
                 if value.id == id:
                     return value
 
