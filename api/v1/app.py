@@ -27,4 +27,4 @@ if __name__ == "__main__":
     else:
         port = environ.get('HBNB_API_PORT')
 
-    app.run(host=host, port=port, threaded=True)
+    app.run(debug=True, host=host, port=port, threaded=True)
