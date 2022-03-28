@@ -80,8 +80,7 @@ class DBStorage:
         if cls not in classes.values():
             return None
         else:
-            class_instance = self.__session.query(
-                cls.id).filter_by(id=id).first()
+            class_instance = self.__session.query(cls).filter_by(id=id).first()
         return class_instance
 
         # cls = class
