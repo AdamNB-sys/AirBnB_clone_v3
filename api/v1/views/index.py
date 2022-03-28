@@ -14,6 +14,9 @@ from models.user import User
 
 classes = {"Amenity": Amenity, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
+key_dict = {"Amenity":  "amenities", "City": "cities",
+            "Place": "places", "Review": "reviews",
+            "State": "states", "User": "users"}
 
 
 @app_views.route('/status', strict_slashes=False, methods=['GET'])
@@ -25,4 +28,7 @@ def app_views_status():
 @app_views.route('/stats', strict_slashes=False, methods=['GET'])
 def get_app_stats():
     """retrieves the number of each object by type"""
-    
+    obj_count = {}
+    for key, value in classes.items():
+        obj_count[key_dict[key]] = storage.count(value)
+    return jsonify(obj_count)
