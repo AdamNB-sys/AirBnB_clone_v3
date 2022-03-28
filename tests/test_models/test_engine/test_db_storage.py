@@ -67,6 +67,31 @@ test_db_storage.py'])
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
 
+    def test_dbs_count(self):
+        storage = db_storage.DBStorage()
+        before = storage.count()
+        new_state = State(name="Boingoes",
+                          id="19d81e74-1009-4162-ac1f-e503b8fa313e")
+        # new_state = State(new_state_dict)
+        print("new state: {}".format(new_state))
+        storage.new(new_state)
+        after = storage.count()
+        self.assertGreater(
+            after, before,
+            'Failed to update storage database, after is not longer')
+        storage.delete(new_state)
+
+    def test_dbs_get(self):
+        storage = db_storage.DBStorage()
+        new_state = State(name="Boingoes",
+                          id="19d81e74-1009-4162-ac1f-e503b8fa313e")
+        # new_state = State(new_state_dict)
+        storage.new(new_state)
+        self.assertEqual(
+            storage.get(id='19d81e74-1009-4162-ac1f-e503b8fa313e').id,
+            '19d81e74-1009-4162-ac1f-e503b8fa313e')
+        storage.delete(new_state)
+
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
