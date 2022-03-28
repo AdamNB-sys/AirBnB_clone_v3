@@ -68,26 +68,29 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
     def test_dbs_count(self):
-        before = DBStorage.count()
-        new_state_dict = {"name": "Boingoes",
-                          "id": "19d81e74-1009-4162-ac1f-e503b8fa313e"}
-        new_state = State(new_state_dict)
-        DBStorage.new(new_state)
-        after = DBStorage.count()
+        storage = db_storage.DBStorage()
+        before = storage.count()
+        new_state = State(name="Boingoes",
+                          id="19d81e74-1009-4162-ac1f-e503b8fa313e")
+        # new_state = State(new_state_dict)
+        print("new state: {}".format(new_state))
+        storage.new(new_state)
+        after = storage.count()
         self.assertGreater(
-            before, after,
+            after, before,
             'Failed to update storage database, after is not longer')
-        DBStorage.delete(new_state)
+        storage.delete(new_state)
 
     def test_dbs_get(self):
-        new_state_dict = {"name": "Boingoes",
-                          "id": "19d81e74-1009-4162-ac1f-e503b8fa313e"}
-        new_state = State(new_state_dict)
-        DBStorage.new(new_state)
+        storage = db_storage.DBStorage()
+        new_state = State(name="Boingoes",
+                          id="19d81e74-1009-4162-ac1f-e503b8fa313e")
+        # new_state = State(new_state_dict)
+        storage.new(new_state)
         self.assertEqual(
-            DBStorage.get(id='19d81e74-1009-4162-ac1f-e503b8fa313e').id,
+            storage.get(id='19d81e74-1009-4162-ac1f-e503b8fa313e').id,
             '19d81e74-1009-4162-ac1f-e503b8fa313e')
-        DBStorage.delete(new_state)
+        storage.delete(new_state)
 
 
 class TestFileStorage(unittest.TestCase):
