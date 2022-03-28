@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Script to start the api"""
 from api.v1.views import app_views
-from flask import Flask
+from flask import Flask, jsonify
 from models import storage
 from os import environ
 
@@ -13,6 +13,11 @@ app.register_blueprint(app_views)
 def app_teardown(exception):
     """closes application"""
     storage.close()
+
+
+@app.errorhandler(404)
+def invalid_route(e):
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == "__main__":
