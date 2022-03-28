@@ -68,16 +68,18 @@ test_file_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
     def test_fs_count(self):
-        before = FileStorage.count()
+        storage = FileStorage()
+        before = storage.count()
         new_state_dict = {"name": "Boingoes",
                           "id": "19d81e74-1009-4162-ac1f-e503b8fa313e"}
         new_state = State(new_state_dict)
-        FileStorage.new(new_state)
-        after = FileStorage.count()
+        print(f'new_state: {new_state}')
+        storage.new(new_state)
+        after = storage.count()
         self.assertGreater(
-            before, after,
+            after, before,
             'Failed to update storage database, after is not longer')
-        FileStorage.delete(new_state)
+        storage.delete(new_state)
 
     # def test_fs_get(self):
 
