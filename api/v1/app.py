@@ -10,7 +10,7 @@ app.register_blueprint(app_views)
 
 
 @app.teardown_appcontext
-def app_teardown():
+def app_teardown(exception):
     """closes application"""
     storage.close()
 
