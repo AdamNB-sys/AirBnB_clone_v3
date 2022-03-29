@@ -47,7 +47,7 @@ def get_user_by_id(user_id):
 
 @app_views.route('/users/<user_id>', strict_slashes=False, methods=['DELETE'])
 def delete_user_by_id(user_id):
-    """deletes amenity by object id"""
+    """deletes user by object id"""
     got_user = storage.get(User, user_id)
     # print(got_user)
     if got_user is None:
@@ -70,8 +70,6 @@ def create_user():
     if content is None or is_json(dumped) is False:
         abort(400, "Not a JSON")
     # print(content.keys())
-    if content.get("name") is None:
-        abort(400, "Missing name")
     if content.get("email") is None:
         abort(400, "Missing email")
     if content.get("password") is None:
