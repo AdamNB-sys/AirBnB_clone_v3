@@ -99,7 +99,6 @@ def update_city(city_id):
     if content is None or is_json(dumped) is False:
         abort(400, "Not a JSON")
 
-
     for nokey in unallowed_update_keys:
         if content.get(nokey):
             del content[nokey]
