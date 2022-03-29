@@ -45,7 +45,7 @@ def get_city_by_id(city_id):
     """retrieves city by object id"""
     got_city = storage.get(City, city_id)
     if got_city is None:
-        return jsonify({"error": "Not found"}), 404
+        abort(404)
     else:
         return jsonify(got_city.to_dict())
 
