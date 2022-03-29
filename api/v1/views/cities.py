@@ -92,19 +92,17 @@ def create_city(state_id):
 @app_views.route('/cities/<city_id>', strict_slashes=False, methods=['PUT'])
 def update_city(city_id):
     """updates an instance of a city"""
+    if storage.get(City, city_id) is None:
+        abort(404)
     content = request.get_json(silent=True)
     dumped = json.dumps(content)
     if content is None or is_json(dumped) is False:
         abort(400, "Not a JSON")
-    if storage.get(City, city_id) is None:
-        abort(404)
+
 
     for nokey in unallowed_update_keys:
         if content.get(nokey):
             del content[nokey]
-
-    if content.get("name") is None:
-        abort(400, "Missing name")
 
     this_city = storage.get(City, city_id)
     this_city.update(**content)
