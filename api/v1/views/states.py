@@ -50,7 +50,7 @@ def get_state_by_id(state_id):
 def delete_state_by_id(state_id):
     """retrieves state by object id"""
     got_state = storage.get(State, state_id)
-    print(got_state)
+    # print(got_state)
     if got_state is None:
         return jsonify({"error": "Not found"}), 404
     else:
