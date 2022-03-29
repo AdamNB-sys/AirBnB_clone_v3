@@ -71,7 +71,6 @@ def create_city(state_id):
     if storage.get(State, state_id) is None:
         abort(404)
     content = request.get_json(silent=True)
-    content['state_id'] = state_id
     # print(content)
     dumped = json.dumps(content)
     # print(type(json.dumps(content)))
@@ -80,12 +79,14 @@ def create_city(state_id):
     if content is None or is_json(dumped) is False:
         abort(400, "Not a JSON")
     # print(content.keys())
+    content['state_id'] = state_id
     if content.get("name") is None:
         abort(400, "Missing name")
 
     new_city = City(**content)
     storage.new(new_city)
     storage.save()
+    # print(new_city.to_dict())
     return jsonify(new_city.to_dict()), 201
 
 
