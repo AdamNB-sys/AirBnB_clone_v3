@@ -94,9 +94,6 @@ def update_state(state_id):
         if content.get(nokey):
             del content[nokey]
 
-    if content.get("name") is None:
-        abort(400, "Missing name")
-
     this_state = storage.get(State, state_id)
     this_state.update(**content)
     return jsonify(this_state.to_dict()), 200
