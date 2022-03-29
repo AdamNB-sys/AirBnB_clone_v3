@@ -73,14 +73,14 @@ def delete_state_by_id(state_id):
 def create_state():
     """creates an instance of a state"""
     content = request.get_json(silent=True)
-    print(content)
+    # print(content)
     dumped = json.dumps(content)
-    print(type(json.dumps(content)))
-    print(is_json(content))
-    print(is_json(dumped))
+    # print(type(json.dumps(content)))
+    # print(is_json(content))
+    # print(is_json(dumped))
     if content is None or is_json(dumped) == False:
         abort(400, "Not a JSON")
-    print(content.keys())
+    # print(content.keys())
     if content.get("name") == None:
         abort(400, "Missing name")
 
@@ -89,3 +89,27 @@ def create_state():
     storage.new(new_state)
     storage.save()
     return jsonify(new_state.to_dict()), 201
+
+
+
+@app_views.route('/states/<state_id>', strict_slashes=False, methods=['PUT'])
+def update_state(state_id):
+    """updates an instance of a state"""
+    content = request.get_json(silent=True)
+    dumped = json.dumps(content)
+    if content is None or is_json(dumped) == False:
+        abort(400, "Not a JSON")
+
+    if content.get("created_at"):
+        del content["created_at"]
+    if content.get("updated_at"):
+        del content["updated_at"]
+    if content.get("id"):
+        del content["id"]
+
+    if content.get("name") == None:
+        abort(400, "Missing name")
+
+    this_state = storage.get(State, state_id)
+    this_state.update(**content)
+    return jsonify(this_state.to_dict()), 200
