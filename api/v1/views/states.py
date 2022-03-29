@@ -6,6 +6,7 @@ from flask.views import View
 import json
 from models.state import State
 from models import storage
+unallowed_update_keys = ["updated_at", "created_at", "id"]
 
 
 def is_json(myjson):
@@ -89,12 +90,9 @@ def update_state(state_id):
     if storage.get(State, state_id) is None:
         abort(404)
 
-    if content.get("created_at"):
-        del content["created_at"]
-    if content.get("updated_at"):
-        del content["updated_at"]
-    if content.get("id"):
-        del content["id"]
+    for nokey in unallowed_update_keys:
+        if content.get(nokey):
+            del content[nokey]
 
     if content.get("name") is None:
         abort(400, "Missing name")
