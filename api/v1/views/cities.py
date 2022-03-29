@@ -57,7 +57,7 @@ def delete_city_by_id(city_id):
     got_city = storage.get(City, city_id)
     # print(got_city)
     if got_city is None:
-        return jsonify({"error": "Not found"}), 404
+        abort(404)
     else:
         storage.delete(got_city)
         storage.save()
