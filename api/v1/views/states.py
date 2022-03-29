@@ -12,12 +12,28 @@
 # Update the State object with all key-value pairs of the dictionary.
 # Ignore keys: id, created_at and updated_at
 # Returns the State object with the status code 200
+from distutils.log import error
 from api.v1.views import app_views
-from flask import jsonify
+from flask import abort, jsonify, request
 from flask.views import View
+import json
 from models.state import State
 from models import storage
 
+
+def is_json(myjson):
+    if type(myjson) == str:
+        try:
+            json.loads(myjson)
+        except ValueError as e:
+            return False
+        return True
+    else:
+        try:
+            json.loads(str(myjson))
+        except ValueError as e:
+            return False
+        return True
 
 @app_views.route('/states', strict_slashes=False, methods=['GET'])
 def get_all_state():
@@ -51,3 +67,25 @@ def delete_state_by_id(state_id):
         storage.delete(got_state)
         storage.save()
         return jsonify({}), 200
+
+
+@app_views.route('/states', strict_slashes=False, methods=['POST'])
+def create_state():
+    """creates an instance of a state"""
+    content = request.get_json(silent=True)
+    print(content)
+    dumped = json.dumps(content)
+    print(type(json.dumps(content)))
+    print(is_json(content))
+    print(is_json(dumped))
+    if content is None or is_json(dumped) == False:
+        abort(400, "Not a JSON")
+    print(content.keys())
+    if content.get("name") == None:
+        abort(400, "Missing name")
+
+
+    new_state = State(**content)
+    storage.new(new_state)
+    storage.save()
+    return jsonify(new_state.to_dict()), 201
