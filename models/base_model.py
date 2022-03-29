@@ -71,3 +71,13 @@ class BaseModel:
     def delete(self):
         """delete the current instance from the storage"""
         models.storage.delete(self)
+
+    def update(self, **kwargs):
+        """updates an instance with new values"""
+        print(self.__class__.__name__)
+        storage_key = str(self.__class__.__name__) + "." + str(self.id)
+        if storage_key in models.storage.all():
+            for k, v in kwargs.items():
+                setattr(models.storage.all()[storage_key], k, v)
+            models.storage.all()[storage_key].save()
+        
