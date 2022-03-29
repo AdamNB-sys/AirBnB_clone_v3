@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 """view for state to handle all default RESTful API actions"""
-
-from distutils.log import error
 from api.v1.views import app_views
 from flask import abort, jsonify, request
 from flask.views import View
