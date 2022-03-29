@@ -9,6 +9,7 @@ from models import storage
 
 
 def is_json(myjson):
+    """returns bool if item is valid json"""
     if type(myjson) == str:
         try:
             json.loads(myjson)
