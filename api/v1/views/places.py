@@ -28,7 +28,8 @@ def is_json(myjson):
         return True
 
 
-@app_views.route('/cities/<city_id>/places', strict_slashes=False, methods=['GET'])
+@app_views.route('/cities/<city_id>/places',
+                 strict_slashes=False, methods=['GET'])
 def get_all_places(city_id):
     """retrieves all instances of places"""
     if storage.get(City, city_id) is None:
@@ -50,7 +51,8 @@ def get_place_by_id(place_id):
         return jsonify(got_place.to_dict())
 
 
-@app_views.route('/places/<place_id>', strict_slashes=False, methods=['DELETE'])
+@app_views.route('/places/<place_id>',
+                 strict_slashes=False, methods=['DELETE'])
 def delete_place_by_id(place_id):
     """deletes place by object id"""
     got_place = storage.get(Place, place_id)
@@ -63,7 +65,8 @@ def delete_place_by_id(place_id):
         return jsonify({}), 200
 
 
-@app_views.route('/cities/<city_id>/places', strict_slashes=False, methods=['POST'])
+@app_views.route('/cities/<city_id>/places',
+                 strict_slashes=False, methods=['POST'])
 def create_place(city_id):
     """creates an instance of a place"""
     if storage.get(City, city_id) is None:
@@ -80,6 +83,7 @@ def create_place(city_id):
 
     if content.get("user_id") is None:
         abort(400, "Missing user_id")
+    content['city_id'] = city_id
     if storage.get(User, content.get("user_id")) is None:
         abort(404)
     if content.get("name") is None:
