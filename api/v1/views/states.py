@@ -86,6 +86,8 @@ def update_state(state_id):
     dumped = json.dumps(content)
     if content is None or is_json(dumped) is False:
         abort(400, "Not a JSON")
+    if storage.get(State, state_id) is None:
+        abort(404)
 
     if content.get("created_at"):
         del content["created_at"]
