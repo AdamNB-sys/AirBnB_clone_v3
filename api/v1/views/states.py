@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 """view for state to handle all default RESTful API actions"""
-
-from distutils.log import error
 from api.v1.views import app_views
 from flask import abort, jsonify, request
 from flask.views import View
@@ -50,7 +48,7 @@ def get_state_by_id(state_id):
 def delete_state_by_id(state_id):
     """retrieves state by object id"""
     got_state = storage.get(State, state_id)
-    print(got_state)
+    # print(got_state)
     if got_state is None:
         return jsonify({"error": "Not found"}), 404
     else:
