@@ -68,6 +68,8 @@ def delete_city_by_id(city_id):
                  strict_slashes=False, methods=['POST'])
 def create_city(state_id):
     """creates an instance of a city"""
+    if storage.get(State, state_id) is None:
+        abort(404)
     content = request.get_json(silent=True)
     content['state_id'] = state_id
     # print(content)
