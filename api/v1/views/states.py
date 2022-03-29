@@ -1,17 +1,6 @@
 #!/usr/bin/python3
 """view for state to handle all default RESTful API actions"""
-# creates a state: POST /api/v1/states
-# You must use request.get_json from Flask to transform the HTTP body request to a dictionary
-# If the HTTP body request is not valid JSON, raise a 400 error with the message Not a JSON
-# If the dictionary doesn’t contain the key name, raise a 400 error with the message Missing name
-# Returns the new State with the status code 201
-# updates a state object: PUT /api/v1/states/<state_id>
-# If the state_id is not linked to any State object, raise a 404 error
-# You must use request.get_json from Flask to transform the HTTP body request to a dictionary
-# If the HTTP body request is not valid JSON, raise a 400 error with the message Not a JSON
-# Update the State object with all key-value pairs of the dictionary.
-# Ignore keys: id, created_at and updated_at
-# Returns the State object with the status code 200
+
 from distutils.log import error
 from api.v1.views import app_views
 from flask import abort, jsonify, request
@@ -34,6 +23,7 @@ def is_json(myjson):
         except ValueError as e:
             return False
         return True
+
 
 @app_views.route('/states', strict_slashes=False, methods=['GET'])
 def get_all_state():
@@ -78,12 +68,11 @@ def create_state():
     # print(type(json.dumps(content)))
     # print(is_json(content))
     # print(is_json(dumped))
-    if content is None or is_json(dumped) == False:
+    if content is None or is_json(dumped) is False:
         abort(400, "Not a JSON")
     # print(content.keys())
-    if content.get("name") == None:
+    if content.get("name") is None:
         abort(400, "Missing name")
-
 
     new_state = State(**content)
     storage.new(new_state)
@@ -91,13 +80,12 @@ def create_state():
     return jsonify(new_state.to_dict()), 201
 
 
-
 @app_views.route('/states/<state_id>', strict_slashes=False, methods=['PUT'])
 def update_state(state_id):
     """updates an instance of a state"""
     content = request.get_json(silent=True)
     dumped = json.dumps(content)
-    if content is None or is_json(dumped) == False:
+    if content is None or is_json(dumped) is False:
         abort(400, "Not a JSON")
 
     if content.get("created_at"):
@@ -107,7 +95,7 @@ def update_state(state_id):
     if content.get("id"):
         del content["id"]
 
-    if content.get("name") == None:
+    if content.get("name") is None:
         abort(400, "Missing name")
 
     this_state = storage.get(State, state_id)
