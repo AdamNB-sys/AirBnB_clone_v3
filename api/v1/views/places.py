@@ -37,7 +37,8 @@ def get_all_places(city_id):
     all_places = storage.all(Place).values()
     place_list = []
     for place in all_places:
-        place_list.append(place.to_dict())
+        if place.city_id == city_id:
+            place_list.append(place.to_dict())
     return jsonify(place_list)
 
 
