@@ -6,10 +6,11 @@ from flask.views import View
 import json
 from models.city import City
 from models.place import Place
+from models.review import Review
 from models.user import User
 from models import storage
 unallowed_update_keys = [
-    "updated_at", "created_at", "id", "user_id", "city_id"]
+    "updated_at", "created_at", "id", "user_id", "place_id"]
 
 
 def is_json(myjson):
@@ -28,49 +29,50 @@ def is_json(myjson):
         return True
 
 
-@app_views.route('/cities/<city_id>/places',
+@app_views.route('/places/<place_id>/reviews',
                  strict_slashes=False, methods=['GET'])
-def get_all_places(city_id):
-    """retrieves all instances of places"""
-    if storage.get(City, city_id) is None:
+def get_all_reviews_by_place(place_id):
+    """retrieves all instances of place reviews"""
+    if storage.get(Place, place_id) is None:
         abort(404)
-    all_places = storage.all(Place).values()
-    place_list = []
-    for place in all_places:
-        if place.city_id == city_id:
-            place_list.append(place.to_dict())
-    return jsonify(place_list)
+    all_reviews = storage.all(Review).values()
+    review_list = []
+    for review in all_reviews:
+        if review.place_id == place_id:
+            review_list.append(review.to_dict())
+    return jsonify(review_list)
 
 
-@app_views.route('/places/<place_id>', strict_slashes=False, methods=['GET'])
-def get_place_by_id(place_id):
-    """retrieves place by place id"""
-    got_place = storage.get(Place, place_id)
-    if got_place is None:
+@app_views.route('/reviews/<review_id>',
+                 strict_slashes=False, methods=['GET'])
+def get_review_by_review_id(review_id):
+    """retrieves a review by review id"""
+    got_review = storage.get(Review, review_id)
+    if got_review is None:
         return jsonify({"error": "Not found"}), 404
     else:
-        return jsonify(got_place.to_dict())
+        return jsonify(got_review.to_dict())
 
 
-@app_views.route('/places/<place_id>',
+@app_views.route('/reviews/<review_id>',
                  strict_slashes=False, methods=['DELETE'])
-def delete_place_by_id(place_id):
-    """deletes place by object id"""
-    got_place = storage.get(Place, place_id)
+def delete_review_by_review_id(review_id):
+    """deletes review by review id"""
+    got_review = storage.get(Review, review_id)
     # print(got_place)
-    if got_place is None:
+    if got_review is None:
         return jsonify({"error": "Not found"}), 404
     else:
-        storage.delete(got_place)
+        storage.delete(got_review)
         storage.save()
         return jsonify({}), 200
 
 
-@app_views.route('/cities/<city_id>/places',
+@app_views.route('/places/<place_id>/reviews',
                  strict_slashes=False, methods=['POST'])
-def create_place(city_id):
-    """creates an instance of a place"""
-    if storage.get(City, city_id) is None:
+def create_review_by_place_id(place_id):
+    """creates an instance of a review"""
+    if storage.get(Place, place_id) is None:
         abort(404)
     content = request.get_json(silent=True)
     # print(content)
@@ -84,23 +86,23 @@ def create_place(city_id):
 
     if content.get("user_id") is None:
         abort(400, "Missing user_id")
-    content['city_id'] = city_id
+    content['place_id'] = place_id
     if storage.get(User, content.get("user_id")) is None:
         abort(404)
-    if content.get("name") is None:
-        abort(400, "Missing name")
+    if content.get("text") is None:
+        abort(400, "Missing text")
 
-    new_place = Place(**content)
+    new_review = Review(**content)
     # storage.new(new_amenity)
-    new_place.save()
-    return jsonify(new_place.to_dict()), 201
+    new_review.save()
+    return jsonify(new_review.to_dict()), 201
 
 
-@app_views.route('/places/<place_id>',
+@app_views.route('/reviews/<review_id>',
                  strict_slashes=False, methods=['PUT'])
-def update_place(place_id):
+def update_review_by_review_id(review_id):
     """updates an instance of a place"""
-    if storage.get(Place, place_id) is None:
+    if storage.get(Review, review_id) is None:
         abort(404)
     content = request.get_json(silent=True)
     dumped = json.dumps(content)
@@ -111,6 +113,6 @@ def update_place(place_id):
         if content.get(nokey):
             del content[nokey]
 
-    this_place = storage.get(Place, place_id)
-    this_place.update(**content)
-    return jsonify(this_place.to_dict()), 200
+    this_review = storage.get(Review, review_id)
+    this_review.update(**content)
+    return jsonify(this_review.to_dict()), 200
