@@ -2,10 +2,12 @@
 """Script to start the api"""
 from api.v1.views import app_views
 from flask import Flask, jsonify
+from flask_cors import CORS, cross_origin
 from models import storage
 from os import environ
 
 app = Flask(__name__)
+CORS(app,resources={r"/*": {"origins": "0.0.0.0"}})
 app.register_blueprint(app_views)
 
 
